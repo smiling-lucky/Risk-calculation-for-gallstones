@@ -1,13 +1,12 @@
 import streamlit as st
+import sys
+
+# Try to import pkg_resources to fix xgboost 1.6.2 issue
 try:
     import pkg_resources
+    sys.modules['pkg_resources'] = pkg_resources
 except ImportError:
     pass
-# Monkey patch for xgboost 1.6.2 issue with pkg_resources in some environments
-import sys
-if 'pkg_resources' not in sys.modules:
-    import setuptools.pkg_resources as pkg_resources
-    sys.modules['pkg_resources'] = pkg_resources
 
 import pandas as pd
 
