@@ -18,6 +18,12 @@ except ImportError:
         
     mock_pkg.DistributionNotFound = DistributionNotFound
     
+    # Define get_distribution to raise DistributionNotFound
+    def get_distribution(dist):
+        raise DistributionNotFound(dist)
+        
+    mock_pkg.get_distribution = get_distribution
+    
     # Inject into sys.modules
     sys.modules['pkg_resources'] = mock_pkg
     # Also inject setuptools.pkg_resources just in case
