@@ -1,12 +1,27 @@
 import streamlit as st
 import sys
 
-# Try to import pkg_resources to fix xgboost 1.6.2 issue
+# Workaround for xgboost 1.6.2 issue with pkg_resources
 try:
     import pkg_resources
     sys.modules['pkg_resources'] = pkg_resources
 except ImportError:
-    pass
+    import sys
+    from types import ModuleType
+    
+    # Create a mock pkg_resources module
+    mock_pkg = ModuleType('pkg_resources')
+    
+    # Define DistributionNotFound exception which is what xgboost catches
+    class DistributionNotFound(Exception):
+        pass
+        
+    mock_pkg.DistributionNotFound = DistributionNotFound
+    
+    # Inject into sys.modules
+    sys.modules['pkg_resources'] = mock_pkg
+    # Also inject setuptools.pkg_resources just in case
+    sys.modules['setuptools.pkg_resources'] = mock_pkg
 
 import pandas as pd
 
